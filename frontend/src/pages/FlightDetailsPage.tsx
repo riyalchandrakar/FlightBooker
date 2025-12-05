@@ -20,6 +20,9 @@ const FlightDetailsPage = () => {
   const dep = new Date(selectedFlight.departureTime);
   const arr = new Date(selectedFlight.arrivalTime);
 
+  // 🔥 Total fare calculation here
+  const totalFare = selectedFlight.price * passengers;
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const action: any = await dispatch(
@@ -40,51 +43,49 @@ const FlightDetailsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-slate-50 to-slate-100 pt-24 px-4 pb-10">
       <div className="mx-auto max-w-5xl space-y-6">
 
-        {/* 📌 Header */}
+        {/* HEADER */}
         <div className="mb-2">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 flex items-center gap-2">
             🛫 Flight Details
           </h1>
-          <p className="text-xs text-slate-500">
-            Review flight info and enter passenger details to confirm booking.
-          </p>
+          <p className="text-xs text-slate-500">Review info & confirm booking</p>
         </div>
 
         <main className="grid md:grid-cols-3 gap-6">
 
-          {/* Flight summary card */}
+          {/* LEFT — FLIGHT SUMMARY */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="md:col-span-2 space-y-5"
           >
             <div className="rounded-2xl shadow-md bg-white p-5 flex items-center gap-4 border border-slate-100">
+
               <img
                 src={selectedFlight.airlineLogoUrl}
                 alt={selectedFlight.airlineName}
                 className="h-12 w-12 object-contain"
               />
+
               <div className="flex-1">
                 <p className="text-lg font-bold text-slate-800">
                   {selectedFlight.airlineName}
                 </p>
-                <p className="text-xs text-slate-500">
-                  {selectedFlight.flightNumber}
-                </p>
+                <p className="text-xs text-slate-500">{selectedFlight.flightNumber}</p>
               </div>
 
+              {/* 🔥 Total price instead of single fare */}
               <div className="text-right">
                 <span className="px-3 py-1 text-sm font-semibold bg-blue-600 text-white rounded-full shadow-sm">
-                  ₹{selectedFlight.price.toFixed(0)}
+                  ₹{totalFare.toFixed(0)}
                 </span>
-                <p className="text-[10px] text-slate-400 mt-1">
-                  {passengers} Passenger(s)
-                </p>
+                <p className="text-[10px] text-slate-400 mt-1">{passengers} Passenger(s)</p>
               </div>
             </div>
 
-            {/* Info block */}
+            {/* TIMING + ROUTE DETAILS */}
             <div className="rounded-2xl shadow-md bg-white grid grid-cols-3 p-5 text-sm border border-slate-100">
+
               <div>
                 <p className="text-[11px] uppercase font-semibold text-slate-500">From</p>
                 <p className="text-base font-bold">{selectedFlight.fromCity}</p>
@@ -108,10 +109,11 @@ const FlightDetailsPage = () => {
                   {arr.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
+
             </div>
           </motion.div>
 
-          {/* Passenger Form */}
+          {/* RIGHT — PASSENGER FORM */}
           <motion.form
             onSubmit={handleSubmit}
             initial={{ opacity: 0, x: 10 }}
@@ -121,23 +123,23 @@ const FlightDetailsPage = () => {
             <h2 className="text-sm font-bold text-slate-900">Passenger Details</h2>
 
             <div>
-              <label className="text-xs text-slate-600 font-semibold">Full Name</label>
+              <label className="text-xs font-semibold text-slate-600">Full Name</label>
               <input
+                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-600 font-semibold">Email</label>
+              <label className="text-xs font-semibold text-slate-600">Email</label>
               <input
                 type="email"
-                required
+                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full border rounded-lg px-3 py-2 text-sm"
+                required
               />
             </div>
 
