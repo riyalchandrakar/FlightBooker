@@ -13,11 +13,11 @@ const FlightCard: React.FC<Props> = ({ flight, onSelect }) => {
     <div
       className="
         bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition
-
         flex flex-col gap-3
         sm:flex-row sm:items-center sm:justify-between
       "
     >
+
       {/* Airline Left */}
       <div className="flex items-center gap-4">
         <img
@@ -31,8 +31,10 @@ const FlightCard: React.FC<Props> = ({ flight, onSelect }) => {
         </div>
       </div>
 
-      {/* Middle Route */}
-      <div className="flex items-center justify-between gap-6 sm:gap-10 flex-1">
+
+      {/* Middle Route + 🔥 Duration Added */}
+      <div className="flex items-center justify-between gap-6 sm:gap-12 flex-1">
+
         <div className="flex flex-col items-center">
           <span className="text-sm font-semibold">
             {dep.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -40,7 +42,11 @@ const FlightCard: React.FC<Props> = ({ flight, onSelect }) => {
           <span className="text-[10px] text-slate-500">{flight.fromCity.toUpperCase()}</span>
         </div>
 
-        <div className="hidden sm:block text-slate-500"></div>
+        {/* Duration Section */}
+        <div className="text-center">
+          <p className="text-[10px] text-slate-500 uppercase font-semibold">Duration</p>
+          <p className="text-xs font-medium text-slate-800">{flight.durationMin} min</p>
+        </div>
 
         <div className="flex flex-col items-center">
           <span className="text-sm font-semibold">
@@ -48,13 +54,13 @@ const FlightCard: React.FC<Props> = ({ flight, onSelect }) => {
           </span>
           <span className="text-[10px] text-slate-500">{flight.toCity.toUpperCase()}</span>
         </div>
+
       </div>
 
-      {/* RIGHT → Price + Book Button (Always Right Aligned) */}
+
+      {/* RIGHT → Price + Book Button */}
       <div className="flex flex-col items-end gap-2 sm:min-w-[120px] self-end">
-        <span className="text-lg font-bold text-blue-600">
-          ₹{flight.price.toFixed(0)}
-        </span>
+        <span className="text-lg font-bold text-blue-600">₹{flight.price.toFixed(0)}</span>
 
         <button
           onClick={onSelect}
@@ -67,6 +73,7 @@ const FlightCard: React.FC<Props> = ({ flight, onSelect }) => {
           Book Now
         </button>
       </div>
+
     </div>
   );
 };
