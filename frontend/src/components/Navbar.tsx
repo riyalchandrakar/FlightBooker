@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../store/authSlice";
-import { HiOutlineMenu, HiX } from "react-icons/hi";
 
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);

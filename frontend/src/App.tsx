@@ -15,7 +15,7 @@ import BookingHistoryPage from "./pages/BookingHistoryPage";
 import Navbar from "./components/Navbar";
 
 // Redux
-import { RootState } from "./store";
+import { type RootState } from "./store";
 
 // 🔒 Private Route (NO localStorage)
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
