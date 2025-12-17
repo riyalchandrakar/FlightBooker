@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "./store/hooks";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { setUserFromToken } from "./store/authSlice";
 import { jwtDecode } from "jwt-decode";
 
@@ -14,16 +14,17 @@ import FlightDetailsPage from "./pages/FlightDetailsPage";
 import BookingSuccessPage from "./pages/BookingSuccessPage";
 import BookingHistoryPage from "./pages/BookingHistoryPage";
 
-// Navbar Layout
+// Navbar
 import Navbar from "./components/Navbar";
 
 function App() {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const [authLoaded, setAuthLoaded] = useState(false);
 
-  // 🔥 App load -> token restore but ❗no automatic redirect
+  // 🔁 Restore auth ONLY from sessionStorage
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     if (token) {
       try {
@@ -36,20 +37,19 @@ function App() {
           })
         );
       } catch {
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
       }
     }
 
     setAuthLoaded(true);
-  }, []);
+  }, [dispatch]);
 
-  // Protect Routes
+  // 🔒 Protected route
   const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-    const token = localStorage.getItem("token");
-    return token ? children : <Navigate to="/login" replace />;
+    return user ? children : <Navigate to="/login" replace />;
   };
 
-  // Common Layout with Navbar
+  // Common layout
   const Layout = ({ children }: { children: JSX.Element }) => (
     <>
       <Navbar />
@@ -57,24 +57,77 @@ function App() {
     </>
   );
 
-  if (!authLoaded) return null; // prevents UI flicker
+  if (!authLoaded) return null;
 
   return (
     <Routes>
-
       {/* Public */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
 
-      {/* Private + Navbar */}
-      <Route path="/home" element={<PrivateRoute><Layout><HomePage /></Layout></PrivateRoute>} />
-      <Route path="/search" element={<PrivateRoute><Layout><SearchPage /></Layout></PrivateRoute>} />
-      <Route path="/results" element={<PrivateRoute><Layout><ResultsPage /></Layout></PrivateRoute>} />
-      <Route path="/flight/:id" element={<PrivateRoute><Layout><FlightDetailsPage /></Layout></PrivateRoute>} />
-      <Route path="/booking-success/:id" element={<PrivateRoute><Layout><BookingSuccessPage /></Layout></PrivateRoute>} />
-      <Route path="/bookings" element={<PrivateRoute><Layout><BookingHistoryPage /></Layout></PrivateRoute>} />
+      {/* Private */}
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <HomePage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/search"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <SearchPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/results"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <ResultsPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/flight/:id"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <FlightDetailsPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/booking-success/:id"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <BookingSuccessPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/bookings"
+        element={
+          <PrivateRoute>
+            <Layout>
+              <BookingHistoryPage />
+            </Layout>
+          </PrivateRoute>
+        }
+      />
 
-      {/* Default */}
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
